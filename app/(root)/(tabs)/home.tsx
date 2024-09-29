@@ -1,7 +1,18 @@
+import GoogleTextInput from "@/components/GoogleTextInput"
+import Map from "@/components/Map"
 import RideCard from "@/components/RideCard"
-import { SignedIn,  useUser } from "@clerk/clerk-expo"
+import { icons, images } from "@/constants"
+import { useUser } from "@clerk/clerk-expo"
+import React from "react"
 
-import { FlatList, Text, } from "react-native"
+import {
+    ActivityIndicator,
+    FlatList,
+    Image,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 const recentRides = [
@@ -112,15 +123,86 @@ const recentRides = [
 ]
 
 export default function Page() {
-    
+    const { user } = useUser()
+
+    const loading = true
+
+    const handleSignOut = () => {}
+
+    const handleDestinationPress = () => {}
 
     return (
         <SafeAreaView className="bg-general-500">
             <FlatList
                 data={recentRides?.slice(0, 5)}
                 renderItem={({ item }) => <RideCard ride={item} />}
+                className="px-5"
+                keyboardShouldPersistTaps="handled"
+                contentContainerStyle={{ paddingBottom: 100 }}
+                ListEmptyComponent={() => (
+                    <View className="flex flex-col items-center justify-center">
+                        {!loading ? (
+                            <>
+                                <Image
+                                    source={images.noResult}
+                                    className="w-40 h-40 "
+                                    alt="No recent rides found!"
+                                    resizeMode="contain"
+                                />
+                                <Text className="text-sm">
+                                    No recent rides found!
+                                </Text>
+                            </>
+                        ) : (
+                            <ActivityIndicator size="large" color="#000" />
+                        )}
+                    </View>
+                )}
+                ListHeaderComponent={() => (
+                    <>
+                        <View className="flex flex-row items-center justify-between my-5">
+                            <Text className="text-1xl capitalize font-JakartaExtraBold">
+                                Welcome,{" "}
+                                {user?.firstName ||
+                                    user?.emailAddresses[0].emailAddress.split(
+                                        "@"
+                                    )[0]}{" "}
+                                👋
+                            </Text>
+
+                            <TouchableOpacity
+                                onPress={handleSignOut}
+                                className="justify-center items-center w-10 h-10 bg-white 
+                                    rounded-full"
+                            >
+                                <Image source={icons.out} className="w-5 h-5" />
+                            </TouchableOpacity>
+                        </View>
+
+                        {/**Google Text Input */}
+                        <GoogleTextInput
+                            icons={icons.search}
+                            containerStyle="bg-white shadow-md shadow-neutral-300"
+                            handlePress={handleDestinationPress}
+                        />
+
+                        {/**Current Location */}
+                        <Text className="text-xl font-JakartaBold mt-5 mb-3">
+                            Your current location
+                        </Text>
+
+                        <View className="flex flex-row items-center bg-transparent h-[300px]">
+                            <Map />
+                        </View>
+                        <></>
+
+                        {/**Recent Rides */}
+                        <Text className="text-xl font-JakartaBold mt-5 mb-3">
+                            Recent Rides
+                        </Text>
+                    </>
+                )}
             />
-            
         </SafeAreaView>
     )
 }
