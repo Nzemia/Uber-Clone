@@ -3,7 +3,7 @@ import Map from "@/components/Map"
 import RideCard from "@/components/RideCard"
 import { icons, images } from "@/constants"
 import { useLocationStore } from "@/store"
-import { useUser } from "@clerk/clerk-expo"
+import { useAuth, useUser } from "@clerk/clerk-expo"
 import React, { useEffect, useState } from "react"
 import * as Location from "expo-location"
 
@@ -17,6 +17,9 @@ import {
     View
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { useFetch } from "@/lib/fetch"
+import { Ride } from "@/types/type"
+import { router, useRouter } from "expo-router"
 
 const recentRides = [
     {
@@ -127,18 +130,30 @@ const recentRides = [
 
 export default function Page() {
     const { user } = useUser()
+    const { signOut } = useAuth()
 
-    const loading = true
+    
 
     const { setUserLocation, setDestinationLocation } = useLocationStore()
 
-    const [hasPermissions, setHasPermissions] = useState<boolean>(false)
+    const handleSignOut = () => {
+        signOut()
+        router.replace("/(auth)/sign-in")
+    }
+
+    const [hasPermission, setHasPermission] = useState<boolean>(false)
+
+    const {
+        data: recentRides,
+        loading,
+        error
+    } = useFetch<Ride[]>(`/(api)/ride/${user?.id}`)
 
     useEffect(() => {
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync()
             if (status !== "granted") {
-                setHasPermissions(false)
+                setHasPermission(false)
                 return
             }
 
@@ -157,9 +172,15 @@ export default function Page() {
         })()
     }, [])
 
-    const handleSignOut = () => {}
+    const handleDestinationPress = (location: {
+        latitude: number
+        longitude: number
+        address: string
+    }) => {
+        setDestinationLocation(location)
 
-    const handleDestinationPress = () => {}
+        router.push("/(root)/find-ride")
+    }
 
     return (
         <SafeAreaView className="bg-general-500">
@@ -211,7 +232,7 @@ export default function Page() {
 
                         {/**Google Text Input */}
                         <GoogleTextInput
-                            icons={icons.search}
+                            icon={icons.search}
                             containerStyle="bg-white shadow-md shadow-neutral-300"
                             handlePress={handleDestinationPress}
                         />
