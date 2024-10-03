@@ -5,10 +5,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 import Map from "@/components/Map"
 import { icons } from "@/constants"
-import BottomSheet, {
-    BottomSheetScrollView,
-    BottomSheetView
-} from "@gorhom/bottom-sheet"
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet"
 
 const RideLayout = ({
     title,
@@ -65,14 +62,14 @@ const RideLayout = ({
                             {children}
                         </BottomSheetView>
                     ) : (
-                        <BottomSheetScrollView
+                        <BottomSheetView
                             style={{
                                 flex: 1,
                                 padding: 20
                             }}
                         >
                             {children}
-                        </BottomSheetScrollView>
+                        </BottomSheetView>
                     )}
                 </BottomSheet>
             </View>

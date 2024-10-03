@@ -13,7 +13,7 @@ import {
 import { useDriverStore, useLocationStore } from "@/store"
 import { Driver, MarkerData } from "@/types/type"
 
-const directionsAPI = process.env.EXPO_PUBLIC_DIRECTIONS_API_KEY
+const directionsAPI = process.env.EXPO_PUBLIC_GOOGLE_API_KEY
 
 const Map = () => {
     const {
@@ -61,7 +61,7 @@ const Map = () => {
                 setDrivers(drivers as MarkerData[])
             })
         }
-    }, [markers, destinationLatitude, destinationLongitude])
+    }, [markers, destinationLatitude, destinationLongitude, userLatitude, userLongitude, setDrivers])
 
     const region = calculateRegion({
         userLatitude,
@@ -73,7 +73,7 @@ const Map = () => {
     if (loading || (!userLatitude && !userLongitude))
         return (
             <View className="flex justify-between items-center w-full">
-                <ActivityIndicator size="small" color="#000" />
+                <ActivityIndicator size="large" color="green" />
             </View>
         )
 
@@ -111,6 +111,7 @@ const Map = () => {
                 />
             ))}
 
+            {/**showing map */}
             {destinationLatitude && destinationLongitude && (
                 <>
                     <Marker
