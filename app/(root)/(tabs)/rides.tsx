@@ -35,7 +35,7 @@ const Rides = () => {
                                 <Image
                                     source={images.noResult}
                                     className="w-40 h-40"
-                                    alt="No recent rides found"
+                                    alt="No recent rides found!"
                                     resizeMode="contain"
                                 />
                                 <Text className="text-sm">
