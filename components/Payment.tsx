@@ -45,7 +45,7 @@ const Payment = ({
 
     const initializePaymentSheet = async () => {
         const { error } = await initPaymentSheet({
-            merchantDisplayName: "Example, Inc.",
+            merchantDisplayName: "Uber Clone.",
             intentConfiguration: {
                 mode: {
                     amount: parseInt(amount) * 100,
